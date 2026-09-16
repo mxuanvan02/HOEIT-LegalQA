@@ -30,7 +30,7 @@ This MIT license covers the CODE in this repository (pipeline, audit, and
 verification scripts). It does NOT cover the source textbooks, page images,
 or the dataset's verbatim source excerpts, which are governed by the
 textbook-derived-restricted license published with the dataset:
-https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output/blob/main/LICENSE.md
+https://huggingface.co/datasets/maixuanvan/HOEIT-LegalQA/blob/main/LICENSE.md
 
 Giấy phép MIT này áp dụng cho MÃ NGUỒN trong repo (pipeline, kiểm toán, kiểm
 chứng). Giấy phép KHÔNG áp dụng cho giáo trình nguồn, ảnh trang sách hay các
