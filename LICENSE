@@ -1,0 +1,38 @@
+MIT License
+
+Copyright (c) 2026 HOEIT-LegalQA authors (Mai Xuan Van, Viet Long Tran,
+Van Long Tran, Van Khang Nguyen, Tri Nguyen Dang, Vo Hoang Nguyen Tran,
+Tuong Tri Nguyen)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Scope note / Ghi chú phạm vi:
+
+This MIT license covers the CODE in this repository (pipeline, audit, and
+verification scripts). It does NOT cover the source textbooks, page images,
+or the dataset's verbatim source excerpts, which are governed by the
+textbook-derived-restricted license published with the dataset:
+https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output/blob/main/LICENSE.md
+
+Giấy phép MIT này áp dụng cho MÃ NGUỒN trong repo (pipeline, kiểm toán, kiểm
+chứng). Giấy phép KHÔNG áp dụng cho giáo trình nguồn, ảnh trang sách hay các
+đoạn trích nguyên văn trong bộ dữ liệu — những thành phần đó tuân theo giấy
+phép textbook-derived-restricted phát hành kèm bộ dữ liệu tại liên kết trên.

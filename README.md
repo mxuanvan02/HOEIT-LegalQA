@@ -169,6 +169,25 @@ Ma trận Qwen3.7-plus hoàn chỉnh gồm 72 ô. Sau khi chạy lại 18 ô thu
 
 Đây là các kết quả cấu trúc/nguồn gốc, không phải phán quyết về tính đúng pháp lý hay chất lượng giáo dục. Bản ghi chi tiết giữ ở cục bộ vì đầu ra thô của mô hình, đoạn trích giáo trình và ảnh trang không được phép phân phối lại.
 
+## Dữ liệu và mã nguồn
+
+| Artifact | Vị trí | Trạng thái |
+| --- | --- | --- |
+| Bộ dữ liệu HOEIT-LegalQA (4.668 câu, bản phát hành cuối) | <https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output> | công khai |
+| Mã nguồn pipeline, kiểm toán và kiểm chứng | <https://github.com/mxuanvan02/TQA_Pipeline> | công khai (MIT cho mã nguồn) |
+| Script tái tính số liệu đặc trưng dataset | `scripts/compute_final_stats.py` trong bản phát hành HF | kèm dữ liệu |
+
+Số liệu công bố trong bài báo tái lập được từ bản phát hành HF bằng
+`scripts/compute_final_stats.py`; kiểm chứng độc lập bằng `scripts/verify.py`
+(33 phép kiểm, tách biệt khỏi mã xây dựng).
+
+## Giấy phép
+
+Mã nguồn trong repo này phát hành theo giấy phép MIT (xem tệp `LICENSE`).
+Giấy phép MIT **không** bao gồm giáo trình nguồn, ảnh trang sách hay đoạn trích
+nguyên văn trong bộ dữ liệu; các thành phần đó tuân theo giấy phép
+textbook-derived-restricted công bố kèm bộ dữ liệu trên Hugging Face.
+
 ## Minh bạch và trích dẫn
 
 Prompt runtime nằm trong `scripts/research/run_qwen37_tqa_pilot.py`; phiên bản prompt và biên nhận SHA-256 lưu cục bộ theo từng ô. Chỉ phát hành mã nguồn, fixture tổng hợp, schema không nhạy cảm và bản ghi dẫn xuất đã được phép phân phối lại. Không tải lên sách thô, bản scan, pixel hình vẽ, đoạn trích nguyên văn dài, thông tin xác thực hay đầu ra mô hình thô chưa rà soát.
