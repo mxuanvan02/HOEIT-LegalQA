@@ -2,7 +2,7 @@
 
 Repo này chứa hai nhánh riêng biệt về hỏi–đáp pháp luật tiếng Việt từ giáo trình:
 
-- **HOEIT-LegalQA (benchmark):** pipeline xây dựng bộ dữ liệu trắc nghiệm có nhãn Bloom. Dữ liệu: [maixuanvan/dhh2026-tqa-output](https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output).
+- **HOEIT-LegalQA (benchmark):** pipeline xây dựng bộ dữ liệu trắc nghiệm có nhãn Bloom. Dữ liệu: [maixuanvan/HOEIT-LegalQA](https://huggingface.co/datasets/maixuanvan/HOEIT-LegalQA).
 - **ECM-TQAG (giao thức thực nghiệm):** pipeline sinh và kiểm toán chuỗi bằng chứng. Vị trí dữ liệu dẫn xuất dự kiến: [maixuanvan/ECM-TQAG](https://huggingface.co/datasets/maixuanvan/ECM-TQAG); chưa phát hành artifact ECM nào cho đến khi các cổng sinh, chất lượng và quyền đều đạt.
 
 Không được gộp hai nhánh. HOEIT-LegalQA là bản phát hành benchmark; ECM-TQAG là nghiên cứu thực nghiệm ràng buộc nguồn.
@@ -173,8 +173,8 @@ Ma trận Qwen3.7-plus hoàn chỉnh gồm 72 ô. Sau khi chạy lại 18 ô thu
 
 | Artifact | Vị trí | Trạng thái |
 | --- | --- | --- |
-| Bộ dữ liệu HOEIT-LegalQA (4.668 câu, bản phát hành cuối) | <https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output> | công khai |
-| Mã nguồn pipeline, kiểm toán và kiểm chứng | <https://github.com/mxuanvan02/TQA_Pipeline> | công khai (MIT cho mã nguồn) |
+| Bộ dữ liệu HOEIT-LegalQA (4.668 câu, bản phát hành cuối) | <https://huggingface.co/datasets/maixuanvan/HOEIT-LegalQA> | công khai |
+| Mã nguồn pipeline, kiểm toán và kiểm chứng | <https://github.com/mxuanvan02/HOEIT-LegalQA> | công khai (MIT cho mã nguồn) |
 | Script tái tính số liệu đặc trưng dataset | `scripts/compute_final_stats.py` trong bản phát hành HF | kèm dữ liệu |
 
 Số liệu công bố trong bài báo tái lập được từ bản phát hành HF bằng
@@ -198,7 +198,7 @@ Prompt runtime nằm trong `scripts/research/run_qwen37_tqa_pilot.py`; phiên b�
   author  = {Mai, Xuan Van and Tran, Viet Long and Tran, Van Long and Nguyen, Van Khang and Dang, Nguyen Tri and Tran, Vo Hoang Nguyen and Nguyen, Tuong Tri},
   year    = {2026},
   publisher = {Hugging Face},
-  url     = {https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output}
+  url     = {https://huggingface.co/datasets/maixuanvan/HOEIT-LegalQA}
 }
 ```
 

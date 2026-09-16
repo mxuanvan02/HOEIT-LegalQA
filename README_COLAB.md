@@ -17,7 +17,7 @@ If your repo is on GitHub:
 
 ```bash
 cd /content
-git clone <YOUR_REPO_URL> TQA_Pipeline
+git clone https://github.com/mxuanvan02/HOEIT-LegalQA.git TQA_Pipeline
 cd /content/TQA_Pipeline
 ```
 
