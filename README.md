@@ -1,87 +1,90 @@
-# TQA Pipeline: HOEIT-LegalQA and ECM-TQAG
+# TQA Pipeline: HOEIT-LegalQA và ECM-TQAG
 
-This repository contains two separate Vietnamese legal-textbook QA tracks:
+Repo này chứa hai nhánh riêng biệt về hỏi–đáp pháp luật tiếng Việt từ giáo trình:
 
-- **HOEIT-LegalQA benchmark:** the established Bloom-structured benchmark pipeline. Dataset: [maixuanvan/dhh2026-tqa-output](https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output).
-- **ECM-TQAG experimental protocol:** a reproducible evidence-chain generation and audit pipeline. Its intended derivative dataset location is [maixuanvan/ECM-TQAG](https://huggingface.co/datasets/maixuanvan/ECM-TQAG), but no ECM artifact is released until generation, quality, and rights gates pass.
+- **HOEIT-LegalQA (benchmark):** pipeline xây dựng bộ dữ liệu trắc nghiệm có nhãn Bloom. Dữ liệu: [maixuanvan/dhh2026-tqa-output](https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output).
+- **ECM-TQAG (giao thức thực nghiệm):** pipeline sinh và kiểm toán chuỗi bằng chứng. Vị trí dữ liệu dẫn xuất dự kiến: [maixuanvan/ECM-TQAG](https://huggingface.co/datasets/maixuanvan/ECM-TQAG); chưa phát hành artifact ECM nào cho đến khi các cổng sinh, chất lượng và quyền đều đạt.
 
-The two tracks must not be conflated. HOEIT-LegalQA is an established benchmark release; ECM-TQAG is a source-bound experimental study.
+Không được gộp hai nhánh. HOEIT-LegalQA là bản phát hành benchmark; ECM-TQAG là nghiên cứu thực nghiệm ràng buộc nguồn.
 
-> **Release boundary:** this repository does not grant redistribution rights for source textbooks, page images, or raw model ledgers. A parsed ECM record only means its structural/provenance contract passed; it does not prove legal correctness, pedagogical quality, unique-best-answer validity, or visual grounding.
+> **Ranh giới phát hành:** repo này không cấp quyền phân phối lại giáo trình nguồn, ảnh trang sách hay sổ ghi đầu ra thô của mô hình. Một bản ghi ECM parse được chỉ có nghĩa hợp đồng cấu trúc/nguồn gốc của nó đạt — không chứng minh tính đúng pháp lý, chất lượng sư phạm, tính duy nhất của đáp án đúng hay khả năng bám ảnh.
 
-## HOEIT-LegalQA benchmark
+## HOEIT-LegalQA
 
-### Current paper-aligned release
+### Bản phát hành cuối cùng
 
-- Source documents: 48 university-level law textbooks from the Institute of Open Education and Information Technology, Hue University.
-- Full public release: 14,998 records; eval-ready subset: 14,210 records.
-- Document-aware train/dev/test split: 9,894 / 2,144 / 2,172 records.
-- Bloom levels: Remember, Understand, Apply.
-- Evaluated model families: Gemma-2-9B, Llama-3-8B, Mistral-7B, Qwen2.5-7B.
+- Nguồn: 48 giáo trình luật bậc đại học của Viện Đào tạo Mở và Công nghệ Thông tin, Đại học Huế.
+- **Bản phát hành cuối: 4.668 câu trắc nghiệm bốn lựa chọn** (`data/{train,dev,test}.jsonl` trên HF), chia theo giáo trình nguồn: 3.440 / 540 / 688 (train/dev/test), không giao `doc_id`/`chunk_id` giữa các tập.
+- Nhãn Bloom: Remember, Understand, Apply (30,46% / 31,83% / 37,70%).
+- 40 miền pháp luật; vị trí đáp án đúng gần đều (23,5–26,1%).
+- Các mô hình đã đánh giá: Gemma-2-9B, Llama-3-8B, Mistral-7B, Qwen2.5-7B.
 
-The benchmark supports Vietnamese legal NLP, legal-education QA, Bloom-level reasoning analysis, and retrieval-grounded multiple-choice evaluation. It is not legal advice or a high-stakes assessment instrument without independent expert validation.
+Bản phát hành cuối là lớp đánh giá 14.210 câu **sau tầng kiểm toán nội dung**: loại thân câu suy biến (3.602), ngữ cảnh cắt cụt tại ngưỡng 3.000 ký tự (2.950), giải thích mâu thuẫn đáp án (943), rò rỉ tiếng Anh (28), rồi cân bằng hạng độ dài của đáp án đúng (đưa heuristic "chọn phương án dài nhất" từ 37,9–43,6% về đúng mức cơ hội 25,0%). Tỷ lệ giữ lại 32,9%. Chi tiết, số liệu kiểm chứng 33/33 và các đường cơ sở tham chiếu (random 25,0%; lexical overlap 43,5% trên test — báo cáo kèm mọi kết quả accuracy) nằm trong dataset card trên HF.
+
+Benchmark phục vụ NLP pháp lý tiếng Việt, QA giáo dục luật, phân tích suy luận theo Bloom và đánh giá trắc nghiệm có ngữ cảnh nguồn. Đây không phải tư vấn pháp lý và không phải công cụ đánh giá năng lực rủi ro cao khi chưa có thẩm định chuyên gia độc lập.
 
 ### Pipeline
 
-1. PDF digitization: `marker-pdf` converts source PDFs to Markdown and extracts page-level visual assets.
-2. Multimodal structuring: Markdown is split into source-traceable legal contexts; Vintern-1B-v3 enriches image-bearing contexts.
-3. QA generation: Qwen2.5-7B-Instruct-AWQ generates Vietnamese MCQs across the three Bloom levels.
-4. Quality filtering: Gemma-2-2B-IT checks groundedness, multimodal alignment, legal fluency, and taxonomy consistency.
+1. Số hóa PDF: `marker-pdf` chuyển giáo trình sang Markdown, trích tài sản trực quan theo trang.
+2. Cấu trúc đa phương thức: chia Markdown thành các ngữ cảnh pháp lý truy nguyên được; `Vintern-1B-v3.5` mô tả các ngữ cảnh có ảnh.
+3. Sinh QA: `Qwen2.5-7B-Instruct-AWQ` sinh câu trắc nghiệm tiếng Việt theo ba mức Bloom.
+4. Lọc chất lượng: `Gemma-2-2B-IT` kiểm tra độ bám ngữ cảnh, phù hợp đa phương thức, mạch lạc pháp lý và nhất quán nhãn.
+5. Kiểm toán nội dung: năm bước xác định (hạt giống 42) — `scripts/build.py` của bản phát hành HF; kiểm chứng độc lập bằng `scripts/verify.py` (33 phép kiểm).
 
-Benchmark preparation is separate: it applies answer normalization, language-sanity cleanup, document-aware splitting, and deterministic option-position rebalancing.
+Chuẩn bị benchmark là bước riêng: chuẩn hóa đáp án, làm sạch ngôn ngữ, chia tập theo tài liệu và cân bằng vị trí phương án có tính tất định.
 
-### Benchmark metrics
+### Chỉ số benchmark
 
-Accuracy is the proportion of correct held-out MCQ answers. The benchmark compares `None` (question and options only) with `With` (question, options, and gold source context). Context gain is their paired item-level difference in percentage points. Accuracy intervals use Wilson 95% confidence intervals; context-gain intervals use paired differences; p-values use continuity-corrected McNemar tests over discordant outcomes.
+Độ chính xác là tỷ lệ câu trả lời đúng trên toàn bộ câu được đánh giá (mẫu số = số câu của tập, không loại câu nào). Benchmark so sánh điều kiện không ngữ cảnh với điều kiện có đoạn trích nguồn đúng (gắn sẵn; không đánh giá truy hồi). Chênh lệch ngữ cảnh là hiệu số điểm phần trăm ghép cặp theo từng câu. Khoảng tin cậy của chênh lệch dùng bootstrap theo cụm giáo trình (B = 10.000); p-value dùng kiểm định McNemar có hiệu chỉnh Yates trên các ô lệch. Toàn bộ số liệu báo cáo trong bài tính lại được từ `scripts/compute_final_stats.py` (kèm bản phát hành HF) và ledger dự đoán theo từng câu.
 
-## ECM-TQAG: graph-program multimodal TQA generation
+## ECM-TQAG: sinh QA đa phương thức theo chương trình đồ thị
 
-### Method contract
+### Hợp đồng phương pháp
 
-For every frozen chunk, ECM-TQAG uses three evidence conditions:
+Với mỗi chunk đã đóng băng, ECM-TQAG dùng ba điều kiện bằng chứng:
 
-- **T:** extracted text only.
-- **TL_struct:** text plus declared document structure.
-- **TLV:** text, structure, and attached image pixels.
+- **T:** chỉ văn bản trích xuất.
+- **TL_struct:** văn bản + cấu trúc tài liệu khai báo.
+- **TLV:** văn bản + cấu trúc + pixel ảnh đính kèm.
 
-It produces one candidate item under each protocol:
+Mỗi điều kiện sinh một ứng viên theo ba giao thức:
 
-- **Direct:** creates an MCQ from one directly supported proposition.
-- **Answer-first:** locks a supported answer first, then builds a question and same-domain distractors.
-- **ECM (Evidence-Chain Method):** makes a planner call followed, when the plan passes deterministic checks, by a realization call. The planner proposes a source-bound document graph and a closed-catalog motif request. Local code matches the motif, compiles and executes a restricted graph program, and derives locked answer atoms and provenance traces. A realizer receives **only this locked construction**, not the original text or image pixels, and creates one MCQ.
+- **Direct:** tạo câu trắc nghiệm từ một mệnh đề được nguồn hỗ trợ trực tiếp.
+- **Answer-first:** khóa đáp án được hỗ trợ trước, rồi dựng câu hỏi và phương án nhiễu cùng miền.
+- **ECM (Evidence-Chain Method):** một lời gọi planner, sau đó (khi plan qua các phép kiểm tất định) một lời gọi realization. Planner đề xuất đồ thị tài liệu ràng buộc nguồn và một yêu cầu motif trong danh mục đóng. Mã cục bộ khớp motif, biên dịch và thực thi một chương trình đồ thị hạn chế, dẫn xuất các nguyên tử đáp án đã khóa và vết nguồn gốc. Realizer **chỉ nhận cấu trúc đã khóa này**, không nhận văn bản gốc hay pixel ảnh, và tạo một câu trắc nghiệm.
 
-The validator rejects invalid IDs/roles, nodes not bound to frozen evidence, unmatched motifs, missing visual nodes in ECM--TLV plans, incomplete traces/anchors, and changed executor-derived answer atoms. The full matrix is `8 chunks × 3 conditions × 3 protocols = 72` cells. Direct and Answer-first each make one request per cell; ECM uses planner plus realization when planning succeeds, so the complete design plans up to **96 API calls**.
+Validator từ chối: ID/vai không hợp lệ, nút không neo vào bằng chứng đã đóng băng, motif không khớp, thiếu nút ảnh trong plan ECM–TLV, vết/neo không đầy đủ, và nguyên tử đáp án do executor dẫn xuất bị thay đổi. Ma trận đầy đủ là `8 chunks × 3 điều kiện × 3 giao thức = 72 ô`. Direct và Answer-first mỗi ô một lời gọi; ECM dùng planner cộng realization khi lập kế hoạch thành công, nên thiết kế đầy đủ tối đa **96 lời gọi API**.
 
-### Repository layout
+### Cấu trúc repo
 
 ```text
-scripts/research/build_ecm_8chunk_manifest.py  # builds immutable 8×3 manifest
-scripts/research/run_qwen37_tqa_pilot.py       # scoped pilot or full matrix
-scripts/research/audit_strict_tqa_results.py   # deterministic provenance audit
-tests/test_qwen37_tqa_pilot.py                 # ECM contract tests
-research/artifacts/                            # local, git-ignored manifests
-research/results/                              # local, git-ignored ledgers/audits
+scripts/research/build_ecm_8chunk_manifest.py  # dựng manifest 8×3 bất biến
+scripts/research/run_qwen37_tqa_pilot.py       # pilot thu gọn hoặc ma trận đầy đủ
+scripts/research/audit_strict_tqa_results.py   # kiểm toán nguồn gốc tất định
+tests/test_qwen37_tqa_pilot.py                 # test hợp đồng ECM
+research/artifacts/                            # manifest cục bộ, git-ignored
+research/results/                              # sổ ghi/audit cục bộ, git-ignored
 ```
 
-The runner filename is retained for compatibility with existing scripts; it supports both a scoped evaluation and the complete matrix.
+Tên file runner được giữ để tương thích với script hiện có; nó hỗ trợ cả đánh giá thu gọn lẫn ma trận đầy đủ.
 
-### Requirements
+### Yêu cầu
 
-- Python 3.10+; the ECM runner itself uses only the standard library.
-- An OpenRouter key authorized for `qwen/qwen3.7-plus`.
-- A local immutable manifest and its referenced image files.
+- Python 3.10+; riêng runner ECM chỉ dùng thư viện chuẩn.
+- Khóa OpenRouter được cấp phép cho `qwen/qwen3.7-plus`.
+- Manifest bất biến cục bộ và các file ảnh mà nó tham chiếu.
 
-For the broader OCR/chunking pipeline:
+Cho pipeline OCR/chunking rộng hơn:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-Never commit `.env` files, API keys, raw textbooks, extracted images, or raw ledgers.
+Không bao giờ commit `.env`, khóa API, giáo trình thô, ảnh trích xuất hay sổ ghi thô.
 
-### Build immutable evidence packages
+### Dựng gói bằng chứng bất biến
 
-The generation runner consumes a frozen manifest rather than arbitrary source text. This makes the T/TL_struct/TLV inputs explicit and verifies image size/hash before a request.
+Runner sinh tiêu thụ manifest đã đóng băng thay vì văn bản nguồn tùy ý. Điều này làm đầu vào T/TL_struct/TLV tường minh và kiểm tra kích thước/hash ảnh trước mỗi lời gọi.
 
 ```bash
 python scripts/research/build_ecm_8chunk_manifest.py \
@@ -90,9 +93,9 @@ python scripts/research/build_ecm_8chunk_manifest.py \
   --out research/artifacts/ecm_inputs_8chunks_v3.json
 ```
 
-The input contract requires exactly eight chunks and T, TL_struct, TLV packages for each chunk. T has text only; TL_struct adds declared structure; TLV adds verified images. Image markdown, filenames, and page separators are removed from shared text; pixels are attached only for TLV. When OCR splitting leaves a package without sufficient semantic context, the package must be augmented only with demonstrably adjacent source context; unrelated neighbouring text is not inserted.
+Hợp đồng đầu vào yêu cầu đúng tám chunk và đủ ba gói T, TL_struct, TLV cho mỗi chunk. T chỉ có văn bản; TL_struct thêm cấu trúc khai báo; TLV thêm ảnh đã kiểm chứng. Markdown của ảnh, tên file và dấu phân cách trang bị loại khỏi văn bản dùng chung; pixel chỉ đính kèm cho TLV. Khi việc tách OCR để lại một gói thiếu ngữ cảnh ngữ nghĩa, chỉ được bổ sung bằng ngữ cảnh nguồn liền kề có bằng chứng; không chèn văn bản láng giềng không liên quan.
 
-### Validate before API calls
+### Kiểm tra trước khi gọi API
 
 ```bash
 python -m unittest tests/test_qwen37_tqa_pilot.py -v
@@ -110,14 +113,14 @@ python scripts/research/run_qwen37_tqa_pilot.py \
   --all --dry-run
 ```
 
-The dry run should report 72 cells and 96 planned calls; it neither reads an API key nor writes a result directory.
+Dry run phải báo cáo 72 ô và 96 lời gọi dự kiến; nó không đọc khóa API và không ghi thư mục kết quả.
 
-### Run frozen chunks to a results ledger
+### Chạy các chunk đã đóng băng vào sổ kết quả
 
-Set the key in the same terminal that starts the runner; never place it in Git, notebooks, issues, or chat logs.
+Đặt khóa trong chính terminal khởi động runner; không bao giờ đưa vào Git, notebook, issue hay nhật ký chat.
 
 ```bash
-export OPENROUTER_API_KEY='replace-with-your-local-secret'
+export OPENROUTER_API_KEY='replac...cret'
 
 RUN_ID="ecm_graph_program_matrix72_YYYYMMDD"
 OUT_DIR="research/results/${RUN_ID}"
@@ -136,11 +139,11 @@ python scripts/research/run_qwen37_tqa_pilot.py \
   --all
 ```
 
-The non-overwriting directory contains `results.jsonl` (append-only cell ledger), `prompt_audit.jsonl` (prompt hashes and field receipts), and `summary.json`. A nonzero exit records rejects/errors without deleting the ledger; do not rerun into the same output directory.
+Thư mục không ghi đè chứa `results.jsonl` (sổ ô chỉ-append), `prompt_audit.jsonl` (hash prompt và biên nhận trường), và `summary.json`. Exit code khác 0 ghi nhận reject/error mà không xóa sổ; không chạy lại vào cùng thư mục đầu ra.
 
-For a nine-cell scoped pilot, use all three `--condition` values and one `--chunk-id` in a distinct output directory.
+Với pilot thu gọn 9 ô, dùng cả ba giá trị `--condition` và một `--chunk-id` trong thư mục đầu ra riêng.
 
-### Mechanical audit
+### Kiểm toán cơ học
 
 ```bash
 python scripts/research/audit_strict_tqa_results.py \
@@ -149,35 +152,39 @@ python scripts/research/audit_strict_tqa_results.py \
   --output "$OUT_DIR/mechanical_audit.json"
 ```
 
-The audit replays record shape, distinct options, answer/choice consistency where applicable, source-bound typed graph nodes and edges, closed-catalog motif predicates, exact restricted-program compiler output, executor-derived answer atoms, construction receipts, program traces, locked graph-node anchors, and the ECM--TLV image-node requirement. It is not a semantic, legal, pedagogical, or image-grounding judge; those require documented human/expert review.
+Phép kiểm audit replay lại: hình dạng bản ghi, các phương án phân biệt, tính nhất quán đáp án/lựa chọn khi áp dụng, nút và cạnh đồ thị kiểu ràng buộc nguồn, vị từ motif trong danh mục đóng, đầu ra compiler chương trình hạn chế chính xác, nguyên tử đáp án do executor dẫn xuất, biên nhận cấu trúc, vết chương trình, neo nút đồ thị đã khóa, và yêu cầu nút ảnh ECM–TLV. Đây không phải bộ phán quyết ngữ nghĩa, pháp lý, sư phạm hay bám ảnh; những mục đó cần quy trình thẩm định người/chuyên gia có tài liệu hóa.
 
-### ECM-TQAG evaluation result (72-cell matrix)
+### Kết quả đánh giá ECM-TQAG (ma trận 72 ô)
 
-The completed Qwen3.7-plus matrix contains 72 cells. After rerunning the 18 cells belonging to two under-contextualized chunks with an augmented evidence manifest, 60 cells parsed (83.3%) and 12 were rejected (16.7%). The final result is reported with mixed provenance: 54 unaffected cells use the original manifest and 18 rerun cells use the augmented manifest. The two subsets are audited separately against their own manifest digests.
+Ma trận Qwen3.7-plus hoàn chỉnh gồm 72 ô. Sau khi chạy lại 18 ô thuộc hai chunk thiếu ngữ cảnh bằng manifest bằng chứng bổ sung, 60 ô parse được (83,3%) và 12 ô bị từ chối (16,7%). Kết quả cuối báo cáo với nguồn gốc hỗn hợp: 54 ô không ảnh hưởng dùng manifest gốc và 18 ô chạy lại dùng manifest bổ sung. Hai tập con được kiểm toán riêng theo digest manifest của từng tập.
 
-The 12 rejections are classified as follows:
+12 ô bị từ chối phân loại như sau:
 
-| Scenario | Count | Interpretation |
+| Tình huống | Số ô | Diễn giải |
 |---|---:|---|
-| Insufficient evidence | 5 | The supplied source context did not support a complete construction; four occurred in a title-and-image-only package. |
-| Non-literal source grounding | 4 | A graph node or anchor paraphrased instead of reproducing a contiguous source span. |
-| ECM answer not bound to executor atom | 2 | The selected option was not mechanically bound to the derived answer atom. |
-| Invalid ECM evidence anchor | 1 | The final anchor did not match the locked graph node. |
+| Bằng chứng không đủ | 5 | Ngữ cảnh nguồn cung cấp không hỗ trợ cấu trúc hoàn chỉnh; bốn ô xảy ra ở gói chỉ có tiêu đề và ảnh. |
+| Neo nguồn không đúng nguyên văn | 4 | Một nút hoặc neo đồ thị diễn giải lại thay vì tái tạo đúng một đoạn nguồn liên tục. |
+| Đáp án ECM không neo vào nguyên tử executor | 2 | Phương án được chọn không được neo cơ học vào nguyên tử đáp án đã dẫn xuất. |
+| Neo bằng chứng ECM không hợp lệ | 1 | Neo cuối không khớp nút đồ thị đã khóa. |
 
-These are structural/provenance outcomes, not judgments of legal correctness or educational quality. Detailed records remain local because raw model outputs, textbook excerpts, and page images are not redistributable.
+Đây là các kết quả cấu trúc/nguồn gốc, không phải phán quyết về tính đúng pháp lý hay chất lượng giáo dục. Bản ghi chi tiết giữ ở cục bộ vì đầu ra thô của mô hình, đoạn trích giáo trình và ảnh trang không được phép phân phối lại.
 
-## Transparency and citation
+## Minh bạch và trích dẫn
 
-Runtime prompts are in `scripts/research/run_qwen37_tqa_pilot.py`; prompt version and SHA-256 receipts are stored locally per cell. Release only code, synthetic fixtures, non-sensitive schemas, and derivative records cleared for redistribution. Do not upload raw books, scans, figure pixels, long verbatim excerpts, credentials, or unreviewed raw model output.
+Prompt runtime nằm trong `scripts/research/run_qwen37_tqa_pilot.py`; phiên bản prompt và biên nhận SHA-256 lưu cục bộ theo từng ô. Chỉ phát hành mã nguồn, fixture tổng hợp, schema không nhạy cảm và bản ghi dẫn xuất đã được phép phân phối lại. Không tải lên sách thô, bản scan, pixel hình vẽ, đoạn trích nguyên văn dài, thông tin xác thực hay đầu ra mô hình thô chưa rà soát.
 
 ```bibtex
 @dataset{hoeitlegalqa2026,
-  title     = {HOEIT-LegalQA: A Bloom-Structured Vietnamese Legal Textbook Question Answering Benchmark},
-  author    = {Mai, Xuan Van and Nguyen, Tuong Tri},
-  year      = {2026},
+  title   = {HOEIT-LegalQA: A Vietnamese legal question--answering dataset with automatically assigned Bloom labels},
+  author  = {Mai, Xuan Van and Tran, Viet Long and Tran, Van Long and Nguyen, Van Khang and Dang, Nguyen Tri and Tran, Vo Hoang Nguyen and Nguyen, Tuong Tri},
+  year    = {2026},
   publisher = {Hugging Face},
-  url       = {https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output}
+  url     = {https://huggingface.co/datasets/maixuanvan/dhh2026-tqa-output}
 }
 ```
 
-For the legacy Google Colab OCR/QAG workflow, see [README_COLAB.md](README_COLAB.md).
+## Lời cảm ơn, tài trợ và khai báo
+
+Nhóm tác giả cảm ơn Viện Đào tạo Mở và Công nghệ Thông tin, Đại học Huế đã cung cấp môi trường nghiên cứu và dữ liệu nghiên cứu (48 tệp PDF giáo trình luật). Nghiên cứu được tài trợ bởi Đề tài khoa học và công nghệ Đại học Huế, mã số DHH2026-19-09. Trong quá trình thực hiện, nhóm tác giả có sử dụng công cụ trí tuệ nhân tạo tạo sinh để hỗ trợ ngữ pháp trong viết bản thảo và hỗ trợ tạo mã nguồn; các tác giả chịu trách nhiệm toàn bộ về nội dung khoa học, dữ liệu và kết luận.
+
+Quy trình Colab cũ cho OCR/QAG: xem [README_COLAB.md](README_COLAB.md).

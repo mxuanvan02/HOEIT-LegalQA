@@ -2,9 +2,7 @@
 
 This checklist is tailored for the current Vietnamese legal multimodal QA pipeline.
 
-Execution assets added in this repo:
-- `research/EXECUTION_RUNBOOK.md`
-- `research/EXPERIMENT_COMMANDS.md`
+Execution assets in this repo:
 - `scripts/research/run_research_prep.sh`
 
 ## 1) What to do to reach a useful, publishable study
