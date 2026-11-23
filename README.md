@@ -24,7 +24,7 @@ Kho mã nguồn của quy trình xây dựng và rà soát bộ dữ liệu hỏ
 
 ## Tóm tắt kết quả thực nghiệm (bài báo)
 
-- **Đánh giá 4 mô hình trọng số mở** (`Llama-3-8B`, `Mistral-7B`, `Qwen2.5-7B`, `Gemma-2-9B`) trên 688 câu kiểm tra (*zero-shot*, giải mã tham lam `temperature = 0`, `max_tokens = 4`): cung cấp đoạn trích nguồn đúng tăng độ chính xác **8,14–20,93 đpt** (8,43–12,79 đpt nếu chỉ tính hai mô hình độc lập ngoài họ sinh/lọc); thiết lập này không đánh giá truy hồi.
+- **Đánh giá 4 mô hình trọng số mở** (`Llama-3-8B`, `Mistral-7B`, `Qwen2.5-7B`, `Gemma-2-9B`) trên 688 câu kiểm tra (*zero-shot*, giải mã tham lam `temperature = 0`, `max_tokens = 4`): cung cấp đoạn trích nguồn đúng tăng độ chính xác **8,14–20,93 đpt** (8,43–12,79 đpt nếu chỉ tính hai mô hình độc lập ngoài họ mô hình sinh và lọc); thiết lập này không đánh giá truy hồi.
 - **Kiểm chứng khả năng phục hồi đáp án từ ngữ cảnh bằng hai mô hình quy mô lớn** trên hai mẫu phân tầng 250 câu rút độc lập (ẩn đáp án vàng): tỷ lệ tuyên bố ngữ cảnh không đủ căn cứ là **22,0%** (55/250) với `qwen4-max` (cùng họ với mô hình sinh, gọi theo lô 20 câu) và **8,0%** (20/250) với `claude-opus-5-5` (khác họ, gọi từng câu).
 
 ## Cấu trúc kho mã nguồn
