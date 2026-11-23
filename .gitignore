@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments and local secrets
+.env
+!.env_example
+.venv/
+env/
+venv/
+ENV/
+
+# OS / editor junk
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+.vscode/
+
+# Local temporary files
+temp/
+tmp/
+BRAIN.md
+
+# Raw and intermediate pipeline data
+data/
+data/raw/
+data/TQA_Pipeline_Backup*/
+data/TQA_Pipeline_Backup-*.zip
+data/output/raw/
+data/output/interim/
+
+# Generated processed datasets and derived assets
+data/output/processed/
+
+# Markdown: chi README va cac tai lieu da phat hanh duoc theo doi
+*.md
+!README.md
+!README_COLAB.md
+!PRE_SUBMISSION_CHECKLIST.md
+
+# local backups (never pushed)
+/_backups/
+
+# submission artifacts: ban thao, template tap chi, bai da xuat ban (co ban quyen)
+# -> repo nay la PUBLIC, khong day cac muc nay len
+/submission_hujos/
+/manuscript/
+/slides/
+
+# agent / runtime state (khong phai ma nguon)
+/.pi-subagents/
+/state/
+
+.pytest_cache/
